@@ -1,4 +1,4 @@
-abstract: Test and flip the taint flag on scalars without regex matches or C<eval>
+abstract: Test for and flip the taint flag without regex matches or C<eval>
 author: "\xC3\x86var Arnfj\xC3\xB6r\xC3\xB0 Bjarmason <avar@cpan.org>"
 build_requires: 
   Test::More: 0
@@ -14,3 +14,4 @@ requires:
   Exporter: 0
   XSLoader: 0
 tests: t/*.t
+version: 0.02
