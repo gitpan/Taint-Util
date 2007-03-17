@@ -7,17 +7,24 @@ MODULE = Taint::Util PACKAGE = Taint::Util
 void
 tainted(SV *sv)
 PPCODE:
+    EXTEND(SP, 1);
     if (SvTAINTED(sv))
-        XPUSHs(&PL_sv_yes);
+        PUSHs(&PL_sv_yes);
     else
-        XPUSHs(&PL_sv_no);
+        PUSHs(&PL_sv_no);
 
 void
-taint(SV * sv)
+taint(...)
+PREINIT:
+    I32 i;
 PPCODE:
-    SvTAINTED_on(sv);
+    for (i = 0; i < items; ++i)
+        SvTAINTED_on(ST(i));
 
 void
-untaint(SV * sv)
+untaint(...)
+PREINIT:
+    I32 i;
 PPCODE:
-    SvTAINTED_off(sv);
+    for (i = 0; i < items; ++i)
+        SvTAINTED_off(ST(i));

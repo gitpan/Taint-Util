@@ -14,4 +14,4 @@ requires:
   Exporter: 0
   XSLoader: 0
 tests: t/*.t
-version: 0.02
+version: 0.03

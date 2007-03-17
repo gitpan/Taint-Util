@@ -15,6 +15,8 @@ MANIFEST			This list of files
 META.yml
 t/00-compile.t
 t/export.t
+t/prototype.t
+t/taint-non-T.t
 t/usage.t
 Util.pm
 Util.xs
