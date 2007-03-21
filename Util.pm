@@ -2,7 +2,7 @@ package Taint::Util;
 use base qw(Exporter);
 use XSLoader ();
 
-$VERSION   = '0.03';
+$VERSION   = '0.04';
 @EXPORT    = qw(tainted taint untaint);
 @EXPORT_OK = @EXPORT;
 
@@ -42,7 +42,7 @@ tainted, instead it checks and flips a flag on the scalar in-place.
 =head2 tainted
 
 Returns a boolean indicating whether a scalar is tainted. Always false
-when not under taint.
+when not under taint mode.
 
 =head2 taint & untaint
 
@@ -54,15 +54,25 @@ tainted, see L<perlsec>). Returns no value (which evaluates to false).
     taint(my @hlagh = qw(a o e u)); # elements of @hlagh now tainted
 
 References (being scalars) can also be tainted, a stringified
-reference reference raises an error where a tainted scalar would.
+reference reference raises an error where a tainted scalar would:
 
     taint(my $ar = \@hlagh);
     system echo => $ar;      # err: Insecure dependency in system
 
-The author can't think of any case where tainting references would
-actually be useful.
+This feature is used by perl to taint the blessed object C<< qr// >>
+stringifies to.
 
-File handles can also be tainted, but this is equally useless as the
+    taint(my $str = "oh noes");
+    my $re = qr/$str/;
+    system echo => $re;      # err: Insecure dependency in system
+
+This does not mean that tainted blessed objects with overloaded
+stringification via L<overload> need return a tainted object since
+those objects may return a non-tainted scalar when stringified (see
+F<t/reftaint.t> for an example). The internal handling of C<< qr// >>
+however ensures that this holds true.
+
+File handles can also be tainted, but this probably useless as the
 handle itself and not lines retrieved from it will be tainted.
 
     taint(*DATA);    # *DATA tainted

@@ -1,7 +1,7 @@
 #!/usr/bin/perl -T
 use strict;
 
-use Test::More tests => 70;
+use Test::More tests => 72;
 use Taint::Util;
 
 # untainted
@@ -139,6 +139,15 @@ while (<DATA>) {
     like $_, qr/^ba[xyz]$/ => "DATA line $_";
     ok !tainted($_) => "DATA line $_ untainted";
 }
+
+#
+# qr// returns a blessed object which is tainted
+#
+
+taint(my $str = "bewbs");
+ok tainted($str) => "New scalar tainted";
+my $re = qr/$str/;
+ok tainted($re) => "qr// tainted";
 
 __DATA__
 bax

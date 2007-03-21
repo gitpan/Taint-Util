@@ -1,9 +1,18 @@
+2007-03-21 Ævar Arnfjörð Bjarmason <avar@cpan.org> (0.04)
+
+	* t/usage.t: Test for qr// taintness
+	* t/reftaint.t: Test tainting of stringified objects
+	* Util.pm: Section in taint/untaint explaining qr// and taintness
+  	of stringified objects
+	* Util.pm: Minor rewording in POD
+	* ChangeLog: s/Usage\.(pm|xs)/Util.$1/g
+	
 2007-03-17 Ævar Arnfjörð Bjarmason <avar@cpan.org> (0.03)
 
 	* t/usage.t: A lot more tests
 	* t/prototype.t: New tests for prototypes
-	* Usage.xs: Support multiple arguments to taint/untaint
-	* Usage.pm: Expanded a lot on the documentation
+	* Util.xs: Support multiple arguments to taint/untaint
+	* Util.pm: Expanded a lot on the documentation
 	
 2007-03-14 Ævar Arnfjörð Bjarmason <avar@cpan.org> (0.02)
 	
