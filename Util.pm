@@ -1,8 +1,8 @@
 package Taint::Util;
-use base qw(Exporter);
+use Exporter 'import';
 use XSLoader ();
 
-$VERSION   = '0.04';
+$VERSION   = '0.05';
 @EXPORT    = qw(tainted taint untaint);
 @EXPORT_OK = @EXPORT;
 
@@ -59,8 +59,8 @@ reference reference raises an error where a tainted scalar would:
     taint(my $ar = \@hlagh);
     system echo => $ar;      # err: Insecure dependency in system
 
-This feature is used by perl to taint the blessed object C<< qr// >>
-stringifies to.
+This feature is used by perl internally to taint the blessed object
+C<< qr// >> stringifies to.
 
     taint(my $str = "oh noes");
     my $re = qr/$str/;
