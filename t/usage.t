@@ -30,7 +30,7 @@ ok !tainted("goood") => "constant not tainted";
     local $@;
     eval { taint("bewbs") };
     my $err = $@; chomp $err; # Don't put \n in TAP output
-    like $err, qr/read-only/ => "$err";
+    ok(!$@, "We don't attempt to taint constants");
 }
 
 #
@@ -72,6 +72,7 @@ ok !tainted($_) => "array elem tainted" for @elem;
 #
 
 my %hv = qw(a b c d);
+
 taint(%hv);
 ok tainted($_) => "Hash value $_ tainted" for values %hv;
 ok !tainted($_) => "Hash key $_ untainted" for keys %hv;

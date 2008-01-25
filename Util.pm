@@ -1,10 +1,21 @@
 package Taint::Util;
-use Exporter 'import';
 use XSLoader ();
 
-$VERSION   = '0.05';
-@EXPORT    = qw(tainted taint untaint);
-@EXPORT_OK = @EXPORT;
+$VERSION   = '0.06';
+
+@EXPORT_OK{qw(tainted taint untaint)} = ();
+
+sub import
+{
+    shift;
+    my $caller = caller;
+    for (@_ ? @_ : keys %EXPORT_OK)
+    {
+        die qq["$_" is not exported by the @{[__PACKAGE__]} module"]
+            unless exists $EXPORT_OK{$_};
+        *{"$caller\::$_"} = \&$_;
+    }
+}
 
 XSLoader::load __PACKAGE__, $VERSION;
 
@@ -100,7 +111,7 @@ E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 =head1 LICENSE
 
-Copyright 2007 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
+Copyright 2007-2008 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
