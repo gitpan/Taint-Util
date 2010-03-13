@@ -1,7 +1,6 @@
 package Taint::Util;
+our $VERSION = '0.07';
 use XSLoader ();
-
-$VERSION   = '0.06';
 
 @EXPORT_OK{qw(tainted taint untaint)} = ();
 
@@ -80,14 +79,62 @@ C<< qr// >> stringifies to.
 This does not mean that tainted blessed objects with overloaded
 stringification via L<overload> need return a tainted object since
 those objects may return a non-tainted scalar when stringified (see
-F<t/reftaint.t> for an example). The internal handling of C<< qr// >>
+F<t/usage.t> for an example). The internal handling of C<< qr// >>
 however ensures that this holds true.
 
-File handles can also be tainted, but this probably useless as the
-handle itself and not lines retrieved from it will be tainted.
+File handles can also be tainted, but this is pretty useless as the
+handle itself and not lines retrieved from it will be tainted, see the
+next section for details.
 
     taint(*DATA);    # *DATA tainted
     my $ln = <DATA>; # $ln not tainted
+
+=head1 About tainting in Perl
+
+Since this module is a low level interface that directly exposes the
+internal C<SvTAINTED*> functions it also presents new and exciting
+ways for shooting yourself in the foot.
+
+Tainting in Perl was always meant to be used for potentially hostile
+external data passed to the program. Perl is passed a soup of strings
+from the outside; it never receives any complex datatypes directly.
+
+For instance, you might get tainted hash keys in C<%ENV> or tainted
+strings from C<*STDIN>, but you'll never get a tainted Hash reference
+or a tainted subroutine. Internally, the perl compiler sets the taint
+flag on external data in a select few functions mainly having to do
+with IO and string operations. For example, the C<ucfirst> function
+will manually set a tainted flag on its newly created string depending
+on whether the original was tainted or not.
+
+However, since Taint::Util is exposing some of perl's guts, things get
+more complex. Internally, tainting is implemented via perl's MAGIC
+facility, which allows you to attach attach magic to any scalar, but
+since perl doesn't liberally taint scalars it's there to back you up
+if you do.
+
+You can C<taint(*DATA)> and C<tainted(*DATA)> will subsequently be
+true but if you read from the filehandle via C<< <DATA> >> you'll get
+untainted data back. As you might have guessed this is completely
+useless.
+
+The test file F<t/usage.t> highlights some of these edge cases.
+
+Back in the real world, the only reason tainting makes sense is because
+perl will back you up when you use it, e.g. it will slap your hand if
+you try to pass a tainted value to system().
+
+If you taint references, perl doesn't offer that protection, because it
+doesn't know anything about tainted references since it would never
+create one. The things that do work like the stringification of
+C<taint($t = [])> (i.e. C<ARRAY(0x11a5d48)>) being tainted only work
+incidentally.
+
+But I'm not going to stop you. By all means, have at it! Just don't
+expect it to do anything more useful than warming up your computer.
+
+See L<RT #53988|https://rt.cpan.org/Ticket/Display.html?id=53988> for
+the bug that inspired this section.
 
 =head1 EXPORTS
 
@@ -111,7 +158,7 @@ E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason <avar@cpan.org>
 
 =head1 LICENSE
 
-Copyright 2007-2008 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
+Copyright 2007-2010 E<AElig>var ArnfjE<ouml>rE<eth> Bjarmason.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

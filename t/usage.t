@@ -1,7 +1,7 @@
 #!/usr/bin/perl -T
 use strict;
 
-use Test::More tests => 72;
+use Test::More tests => 74;
 use Taint::Util;
 
 # untainted
@@ -115,7 +115,10 @@ ok !tainted($_) => "ARRAY element $_ untainted" for @$ar;
 # CODE
 ok !tainted($cr) => "CODE untainted";
 taint($cr);
-ok tainted($cr) => "CODE untainted";
+ok tainted($cr) => "CODE tainted";
+ok tainted("$cr") => '"CODE" tainted';
+ok !tainted($cr->()) => 'CODE->() untainted';
+
 
 # GLOB
 ok !tainted(*$gr) => "*STDIN untainted";
@@ -147,8 +150,15 @@ while (<DATA>) {
 
 taint(my $str = "bewbs");
 ok tainted($str) => "New scalar tainted";
-my $re = qr/$str/;
-ok tainted($re) => "qr// tainted";
+
+if ($] < 5.008) {
+  SKIP: {
+    skip "qr// tainted is known to fail on 5.6.2 and below" => 1;
+  }
+} else {
+    my $re = qr/$str/;
+    ok tainted($re) => "qr// tainted";
+}
 
 __DATA__
 bax
