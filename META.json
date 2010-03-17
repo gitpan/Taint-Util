@@ -16,7 +16,7 @@
       "version" : 1.4,
       "url" : "http://module-build.sourceforge.net/META-spec-v1.4.html"
    },
-   "version" : "0.07",
+   "version" : "0.08",
    "name" : "Taint-Util",
    "author" : [
       "\u00c3\u0086var Arnfj\u00c3\u00b6r\u00c3\u00b0 Bjarmason <avar@cpan.org>"
@@ -25,8 +25,7 @@
    "build_requires" : {},
    "requires" : {
       "Test::More" : "0",
-      "XSLoader" : "0",
-      "Taint::Util" : "0"
+      "XSLoader" : "0"
    },
    "abstract" : "Test for and flip the taint flag without regex matches or C<eval>",
    "configure_requires" : {

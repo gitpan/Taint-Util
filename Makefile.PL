@@ -17,11 +17,10 @@ my %WriteMakefileArgs = (
   'LICENSE' => 'perl',
   'NAME' => 'Taint::Util',
   'PREREQ_PM' => {
-    'Taint::Util' => '0',
     'Test::More' => '0',
     'XSLoader' => '0'
   },
-  'VERSION' => '0.07',
+  'VERSION' => '0.08',
   'test' => {
     'TESTS' => 't/*.t'
   }
